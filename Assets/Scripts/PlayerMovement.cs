@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform orientation;
 
     [Header("Movement")]
-    [SerializeField] float moveSpeed = 6f;
+    [SerializeField] float moveSpeed = 4f;
     [SerializeField] float airMultiplier = 0.4f;
     float movementMultiplier = 10f;
 
@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jumping")]
     public float jumpForce = 5f;
+    bool canDoubleJump = true;
 
     [Header("Keybinds")]
     [SerializeField] KeyCode jumpKey = KeyCode.Space;
@@ -75,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
         ControlDrag();
         ControlSpeed();
 
-        if (Input.GetKeyDown(jumpKey) && isGrounded)
+        if(Input.GetKeyDown(jumpKey))
         {
             Jump();
         }
@@ -93,16 +94,26 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
-        if (isGrounded)
+        if(isGrounded)
         {
+            canDoubleJump = true;
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        }
+        else
+        {
+            if(canDoubleJump)
+            {
+                canDoubleJump = false;
+                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+                rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            }
         }
     }
 
     void ControlSpeed()
     {
-        if (Input.GetKey(sprintKey) && isGrounded)
+        if (Input.GetKey(sprintKey))
         {
             moveSpeed = Mathf.Lerp(moveSpeed, sprintSpeed, acceleration * Time.deltaTime);
         }
@@ -131,17 +142,17 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
-        if (isGrounded && !OnSlope())
+        if(isGrounded && !OnSlope())
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
         }
-        else if (isGrounded && OnSlope())
+        else if(isGrounded && OnSlope())
         {
             rb.AddForce(slopeMoveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
         }
         else if (!isGrounded)
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier * airMultiplier, ForceMode.Acceleration);
+            rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier * airMultiplier + Vector3.down * 23f, ForceMode.Acceleration);
         }
     }
 }
