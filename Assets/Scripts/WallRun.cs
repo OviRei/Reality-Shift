@@ -76,9 +76,10 @@ public class WallRun : MonoBehaviour
 
     void StartWallRun()
     {
-        rb.useGravity = false;
+        //rb.useGravity = false;
+        print("bbbbbbbbbbbbbbbbbbbbbbbb ");
 
-        rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Force);
+        rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Acceleration);
 
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, wallRunfov, wallRunfovTime * Time.deltaTime);
 
@@ -108,6 +109,7 @@ public class WallRun : MonoBehaviour
     void StopWallRun()
     {
         rb.useGravity = true;
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, wallRunfovTime * Time.deltaTime);
         tilt = Mathf.Lerp(tilt, 0, camTiltTime * Time.deltaTime);

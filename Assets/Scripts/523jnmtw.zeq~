@@ -152,7 +152,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (!isGrounded)
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier * airMultiplier, ForceMode.Acceleration);
+            rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier * airMultiplier /*+ Vector3.down * 23f*/, ForceMode.Acceleration);
         }
     }
 }
