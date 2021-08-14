@@ -81,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
         ControlDrag();
         ControlSpeed();
 
-        if(Input.GetKeyDown(jumpKey))
+        if (Input.GetKeyDown(jumpKey))
         {
             Jump();
         }
