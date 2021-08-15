@@ -29,11 +29,12 @@ public class PlayerMovement : MonoBehaviour
     public float slidingfov;
     public float slidingfovTime;
     public float slideSpeed;
+    public bool isCrouching;
 
     [Header("Keybinds")]
-    [SerializeField] KeyCode jumpKey = KeyCode.Space;
-    [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
-    [SerializeField] KeyCode slideKey = KeyCode.LeftControl;
+    public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode slideKey = KeyCode.LeftControl;
 
     [Header("Camera")]
    
@@ -93,17 +94,13 @@ public class PlayerMovement : MonoBehaviour
 
         MyInput();
         ControlDrag();
-        ControlSpeed();
 
-        if (Input.GetKeyDown(jumpKey))
-        {
-            Jump();
-        }
+        if (Input.GetKeyDown(jumpKey)) Jump();
 
-        if(Input.GetKey(sprintKey) && Input.GetKey(slideKey) && isGrounded)
-        {
-            Slide();
-        }
+        if(!Input.GetKey(sprintKey) && Input.GetKey(slideKey) && isGrounded) isCrouching = true;
+        else isCrouching = false;
+
+        if(Input.GetKey(sprintKey) && Input.GetKey(slideKey) && isGrounded) Slide();
         else 
         {
             isSliding = false;
@@ -112,20 +109,18 @@ public class PlayerMovement : MonoBehaviour
 
         slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
     }
-
+    private void FixedUpdate()
+    {
+        MovePlayer();
+        ControlSpeed();
+    }
     void MyInput()
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
         verticalMovement = Input.GetAxisRaw("Vertical");
 
-        if(isSliding)
-        {
-            moveDirection = orientation.forward * verticalMovement;
-        }
-        else
-        {
-            moveDirection = orientation.forward * verticalMovement + orientation.right * horizontalMovement;
-        }
+        if(isSliding) moveDirection = orientation.forward * verticalMovement;
+        else moveDirection = orientation.forward * verticalMovement + orientation.right * horizontalMovement;
     }
 
     void Jump()
@@ -164,6 +159,10 @@ public class PlayerMovement : MonoBehaviour
         {
             moveSpeed = Mathf.Lerp(moveSpeed, sprintSpeed, acceleration * Time.deltaTime);
         }
+        else if(isCrouching || !isSliding && Input.GetKey(slideKey))
+        {
+            moveSpeed = Mathf.Lerp(moveSpeed, walkSpeed/2, acceleration * Time.deltaTime);
+        }
         else if(isSliding)
         {
             moveSpeed = Mathf.Lerp(moveSpeed, slideSpeed, acceleration * Time.deltaTime);
@@ -186,10 +185,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        MovePlayer();
-    }
+
 
     void MovePlayer()
     {
