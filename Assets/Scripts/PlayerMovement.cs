@@ -22,9 +22,23 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 5f;
     public bool canDoubleJump = true;
 
+    [Header("Sliding")]
+    public bool isSliding;
+    public float lengthOfSlide;
+    public float slideTime;
+    public float slidingfov;
+    public float slidingfovTime;
+    public float slideSpeed;
+
     [Header("Keybinds")]
     [SerializeField] KeyCode jumpKey = KeyCode.Space;
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
+    [SerializeField] KeyCode slideKey = KeyCode.LeftControl;
+
+    [Header("Camera")]
+   
+    [SerializeField] private Camera cam;
+    [SerializeField] private float fov;
 
     [Header("Drag")]
     [SerializeField] float groundDrag = 6f;
@@ -86,6 +100,16 @@ public class PlayerMovement : MonoBehaviour
             Jump();
         }
 
+        if(Input.GetKey(sprintKey) && Input.GetKey(slideKey) && isGrounded)
+        {
+            Slide();
+        }
+        else 
+        {
+            isSliding = false;
+            slideTime = lengthOfSlide;
+        }
+
         slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
     }
 
@@ -94,7 +118,14 @@ public class PlayerMovement : MonoBehaviour
         horizontalMovement = Input.GetAxisRaw("Horizontal");
         verticalMovement = Input.GetAxisRaw("Vertical");
 
-        moveDirection = orientation.forward * verticalMovement + orientation.right * horizontalMovement;
+        if(isSliding)
+        {
+            moveDirection = orientation.forward * verticalMovement;
+        }
+        else
+        {
+            moveDirection = orientation.forward * verticalMovement + orientation.right * horizontalMovement;
+        }
     }
 
     void Jump()
@@ -107,18 +138,35 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(canDoubleJump && !(wallRun.wallLeft || wallRun.wallRight))
         {
-          // if you can still double jump and you're not touching a wall, you should use your double jump
             canDoubleJump = false;
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }
     }
 
+    void Slide()
+    {
+        isSliding = true;
+        slideTime -= Time.deltaTime;
+
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, slidingfov, slidingfovTime * Time.deltaTime);
+
+        if(slideTime <= 0)
+        {
+            isSliding = false;
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, slidingfovTime * Time.deltaTime);
+        }
+    }
+
     void ControlSpeed()
     {
-        if (Input.GetKey(sprintKey))
+        if (Input.GetKey(sprintKey) && !Input.GetKey(slideKey))
         {
             moveSpeed = Mathf.Lerp(moveSpeed, sprintSpeed, acceleration * Time.deltaTime);
+        }
+        else if(isSliding)
+        {
+            moveSpeed = Mathf.Lerp(moveSpeed, slideSpeed, acceleration * Time.deltaTime);
         }
         else
         {

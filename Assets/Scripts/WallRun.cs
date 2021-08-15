@@ -83,9 +83,9 @@ public class WallRun : MonoBehaviour
     void StartWallRun()
     {
         // maybe add it back? not sure
-        //rb.useGravity = false;
+        rb.useGravity = false;
 
-        // rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Acceleration);
+        rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Acceleration);
 
         // enables the double jump again, because you started wallrunning so you should have an extra one
         playerMovement.canDoubleJump = true;

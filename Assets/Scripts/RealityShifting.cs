@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class RealityShifting : MonoBehaviour
 {
-    [Header("Object Visability")]
-    [SerializeField] bool BlueObjsVisability = false;
-    [SerializeField] bool OrangeObjsVisability = true;
+    private bool BlueObjsVisability = false;
+    private bool OrangeObjsVisability = true;
 
     private GameObject[] OrangeObjsTag;
     private GameObject[] BlueObjsTag;
