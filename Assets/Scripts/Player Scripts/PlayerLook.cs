@@ -6,9 +6,11 @@ public class PlayerLook : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] WallRun wallRun;
+    [SerializeField] Gun gun;
+    [SerializeField] WeponSwitching weponSwitching;
 
-    [SerializeField] private float sensX = 100f;
-    [SerializeField] private float sensY = 100f;
+    public float sensX = 100f;
+    public float sensY = 100f;
 
     [SerializeField] Transform cam = null;
     [SerializeField] Transform orientation = null;
@@ -25,6 +27,8 @@ public class PlayerLook : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        weponSwitching = transform.Find("Camera").Find("WeponHolder").GetComponent<WeponSwitching>();
     }
 
     private void Update()
@@ -32,8 +36,21 @@ public class PlayerLook : MonoBehaviour
         mouseX = Input.GetAxisRaw("Mouse X");
         mouseY = Input.GetAxisRaw("Mouse Y");
 
-        yRotation += mouseX * sensX * multiplier;
-        xRotation -= mouseY * sensY * multiplier;
+        if(weponSwitching.selectedWepon == 0 && transform.Find("Camera").Find("WeponHolder").Find("Handgun").GetComponent<Gun>().isAiming)
+        {
+            yRotation += mouseX * (sensX/2f) * multiplier;
+            xRotation -= mouseY * (sensY/2.5f) * multiplier;
+        }
+        else if(weponSwitching.selectedWepon == 1 && transform.Find("Camera").Find("WeponHolder").Find("GunHeavy").GetComponent<Gun>().isAiming)
+        {
+            yRotation += mouseX * (sensX/2.5f) * multiplier;
+            xRotation -= mouseY * (sensY/3f) * multiplier;
+        }
+        else
+        {
+            yRotation += mouseX * sensX * multiplier;
+            xRotation -= mouseY * sensY * multiplier;            
+        }
 
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 

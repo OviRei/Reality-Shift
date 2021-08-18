@@ -1,22 +1,42 @@
 using UnityEngine;
+using System.Collections;
 
 public class Gun : MonoBehaviour
 {
-
     public float damage = 10f;
     //public float range = 100f;
     public float impactForce = 30f;
     public float fireRate = 15f;
     public bool singleFire = false;
 
+    public int maxAmmo = 10;
+    public int currentAmmo;
+    public float reloadTime = 1f;
+    private bool isReloading = false;
+    public bool isAiming = false;
+
     public Camera cam;
     public ParticleSystem muzzleFlash;
+    public Animator animator;
 
     private float nextTimeToFire = 0f;
 
-    // Update is called once per frame
+    void start()
+    {
+        currentAmmo = maxAmmo;;
+    }
+
     void Update()
     {
+        if(isReloading) return;
+
+        if(Input.GetKeyDown(KeyCode.R) || currentAmmo <= 0)
+        {
+            if(isAiming) StartCoroutine(ReloadWhileAiming());
+            else StartCoroutine(Reload());
+            return;
+        }
+
         if(singleFire)
         {
             if(Input.GetButtonDown("Fire1"))
@@ -32,6 +52,56 @@ public class Gun : MonoBehaviour
                 Shoot();
             }
         }
+
+        if(Input.GetMouseButton(1))
+        {
+            isAiming = true;
+            animator.SetBool("Aiming", true);
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 5, 10 * Time.deltaTime);
+        }
+        else
+        {
+            isAiming = false;
+            animator.SetBool("Aiming", false);
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 80, 10 * Time.deltaTime);
+        }
+    }
+
+    void OnEnable()
+    {
+        isReloading = false;
+        isAiming = false;
+        animator.SetBool("Reloading", false);
+        animator.SetBool("Aiming", false);
+        animator.SetBool("AimingAndReloading", false);
+    }
+
+    IEnumerator Reload()
+    {
+        isReloading = true;
+
+        animator.SetBool("Reloading", true);
+
+        yield return new WaitForSeconds(reloadTime - .25f);
+        animator.SetBool("Reloading", false);
+        yield return new WaitForSeconds(.25f);
+
+        currentAmmo = maxAmmo;
+        isReloading = false;
+    }
+
+    IEnumerator ReloadWhileAiming()
+    {
+        isReloading = true;
+
+        animator.SetBool("AimingAndReloading", true);
+
+        yield return new WaitForSeconds(reloadTime - .25f);
+        animator.SetBool("AimingAndReloading", false);
+        yield return new WaitForSeconds(.25f);
+
+        currentAmmo = maxAmmo;
+        isReloading = false;
     }
 
     void Shoot()
@@ -39,6 +109,8 @@ public class Gun : MonoBehaviour
         RaycastHit hit;
 
         muzzleFlash.Play();
+
+        currentAmmo--;
 
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit/*, range*/))
         {

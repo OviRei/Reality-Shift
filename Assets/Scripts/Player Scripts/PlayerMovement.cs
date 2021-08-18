@@ -126,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Crouch()
     {
-        if(isCrouching) transform.Find("Camera").localPosition = Vector3.down * 0.3f;
+        if(isCrouching) transform.Find("Camera").localPosition = new Vector3(0, 0.4f, 0) /*Vector3.down * 0.3f*/;
         else transform.Find("Camera").localPosition = new Vector3(0, 1, 0);
     }
 
@@ -152,7 +152,7 @@ public class PlayerMovement : MonoBehaviour
         slideTime -= Time.deltaTime;
 
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, slidingfov, slidingfovTime * Time.deltaTime);
-        transform.Find("Camera").localPosition = Vector3.down * 0.3f;
+        transform.Find("Camera").localPosition = new Vector3(0, 0.4f, 0)/*Vector3.down * 0.3f*/;
         
         if(slideTime <= 0)
         {
