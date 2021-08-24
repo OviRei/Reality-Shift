@@ -3,30 +3,51 @@ using System.Collections;
 
 public class Gun : MonoBehaviour
 {
-    public float damage = 10f;
-    //public float range = 100f;
-    public float impactForce = 30f;
-    public float fireRate = 15f;
-    public bool singleFire = false;
+    //Variables
+    [Header("Shooting")]
+    [SerializeField] private float damage = 10f;
+    //[SerializeField] private float range = 100f;
+    [SerializeField] private float impactForce = 30f;
+    [SerializeField] private float fireRate = 15f;
+    [SerializeField] private bool singleFire = false;
+    [SerializeField] private float nextTimeToFire = 0f;
 
+    [Header("Ammo")]
     public int maxAmmo = 10;
     public int currentAmmo;
-    public float reloadTime = 1f;
-    private bool isReloading = false;
+    [SerializeField] private float reloadTime = 1f;
+    [SerializeField] private bool isReloading = false;
     public bool isAiming = false;
 
-    public Camera cam;
-    public ParticleSystem muzzleFlash;
-    public Animator animator;
+    [Header("Animator")]
+    [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private Animator animator;
+    
+    [Header("Gun Recoil")]
+    private Transform recoilSwayTransform;
+    private Vector3 positionalRecoil = Vector3.zero;
+    private Vector3 rotationalRecoil = Vector3.zero;
+    private Vector3 recoilSwayTransformRotation = Vector3.zero;
 
-    private float nextTimeToFire = 0f;
+    [Header("Camera Recoil")]
+    private Transform cameraRecoilSwayTransform;
+    private Vector3 cameraRotationalRecoil = Vector3.zero;
+    private Vector3 cameraRecoilSwayTransformRotation = Vector3.zero;
 
-    void start()
+    [Header("References")]
+    [SerializeField] private GameObject crosshair;
+    [SerializeField] private Camera cam;
+
+    //Unity Functions
+    private void Start()
     {
-        currentAmmo = maxAmmo;;
+        currentAmmo = maxAmmo;
+
+        recoilSwayTransform = transform.parent.parent;
+        cameraRecoilSwayTransform = transform.parent.parent.parent.parent;
     }
 
-    void Update()
+    private void Update()
     {
         if(isReloading) return;
 
@@ -37,13 +58,7 @@ public class Gun : MonoBehaviour
             return;
         }
 
-        if(singleFire)
-        {
-            if(Input.GetButtonDown("Fire1"))
-            {
-                Shoot();
-            }
-        }
+        if(singleFire && Input.GetButtonDown("Fire1")) Shoot();
         else
         {
             if(Input.GetButton("Fire1") && Time.time >= nextTimeToFire)
@@ -58,25 +73,69 @@ public class Gun : MonoBehaviour
             isAiming = true;
             animator.SetBool("Aiming", true);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 5, 10 * Time.deltaTime);
+            //crosshair.SetActive(false);
         }
         else
         {
             isAiming = false;
             animator.SetBool("Aiming", false);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 80, 10 * Time.deltaTime);
+            //crosshair.SetActive(true);
         }
     }
 
-    void OnEnable()
+    private void FixedUpdate()
+    {
+        positionalRecoil = Vector3.Slerp(positionalRecoil, Vector3.zero, Time.deltaTime * 32);
+        rotationalRecoil = Vector3.Slerp(rotationalRecoil, Vector3.zero, Time.deltaTime * 16);
+        recoilSwayTransform.localPosition = Vector3.Slerp(recoilSwayTransform.localPosition, positionalRecoil, Time.deltaTime * 4);
+        recoilSwayTransformRotation = Vector3.Slerp(recoilSwayTransformRotation, rotationalRecoil, Time.deltaTime * 4);
+        recoilSwayTransform.localRotation = Quaternion.Euler(recoilSwayTransformRotation);
+
+        cameraRotationalRecoil = Vector3.Slerp(cameraRotationalRecoil, Vector3.zero, Time.deltaTime * 16);
+        cameraRecoilSwayTransformRotation = Vector3.Slerp(cameraRecoilSwayTransformRotation, cameraRotationalRecoil, Time.deltaTime * 4);
+        cameraRecoilSwayTransform.localRotation = Quaternion.Euler(cameraRecoilSwayTransformRotation);
+    }
+
+    private void OnEnable()
     {
         isReloading = false;
         isAiming = false;
+
         animator.SetBool("Reloading", false);
         animator.SetBool("Aiming", false);
         animator.SetBool("AimingAndReloading", false);
     }
 
-    IEnumerator Reload()
+    private Quaternion GetQuaternion()
+    {
+        return Quaternion.Euler(cameraRecoilSwayTransformRotation);
+    }
+
+    //My Functions
+    private void Shoot()
+    {
+        RaycastHit hit;
+
+        muzzleFlash.Play();
+
+        currentAmmo--;
+
+        positionalRecoil += new Vector3(0, 0.15f, -0.1f);
+        rotationalRecoil += new Vector3(-8, Random.Range(-8, 8), 0); 
+
+        cameraRotationalRecoil += new Vector3(-8, Random.Range(-8, 8), 0); 
+
+        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hit/*, range*/))
+        {
+            Target target = hit.transform.GetComponent<Target>();
+
+            if(target != null) target.TakeDamage(damage);
+            if(hit.rigidbody != null) hit.rigidbody.AddForce(-hit.normal * impactForce);
+        }
+    }
+
+    private IEnumerator Reload()
     {
         isReloading = true;
 
@@ -90,7 +149,7 @@ public class Gun : MonoBehaviour
         isReloading = false;
     }
 
-    IEnumerator ReloadWhileAiming()
+    private IEnumerator ReloadWhileAiming()
     {
         isReloading = true;
 
@@ -102,28 +161,5 @@ public class Gun : MonoBehaviour
 
         currentAmmo = maxAmmo;
         isReloading = false;
-    }
-
-    void Shoot()
-    {
-        RaycastHit hit;
-
-        muzzleFlash.Play();
-
-        currentAmmo--;
-
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit/*, range*/))
-        {
-            Target target = hit.transform.GetComponent<Target>();
-            if (target != null)
-            {
-                target.TakeDamage(damage);
-            }
-
-            if (hit.rigidbody != null)
-            {
-                hit.rigidbody.AddForce(-hit.normal * impactForce);
-            }
-        }
     }
 }

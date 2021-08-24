@@ -1,43 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RealityShifting : MonoBehaviour
 {
-    private bool BlueObjsVisability = false;
-    private bool OrangeObjsVisability = true;
+    //Variables
+    [Header("Reality Shifting")]
+    [SerializeField] private bool BlueObjsVisability = true;
+    [SerializeField] private bool OrangeObjsVisability = true;
 
+    [Header("Tags")]
     private GameObject[] OrangeObjsTag;
     private GameObject[] BlueObjsTag;
 
+    //Unity Functions
     private void Start()
     {
         ToggleBlueObjsVisability();
     }
+
     private void Update()
     {
-        //Detect if the middle mouse button is pressed
-        if (Input.GetMouseButtonDown(2))
+        if(Input.GetMouseButtonDown(2))
         {
             ToggleOrangeObjsVisability();
             ToggleBlueObjsVisability();
         }
     }
-    
-    void ToggleOrangeObjsVisability()
-    {
-        if(!OrangeObjsVisability)
-        {
-            OrangeObjsVisability = true;
 
-            OrangeObjsTag = GameObject.FindGameObjectsWithTag("OrangeTag");
-            foreach(GameObject OrangeObjs in OrangeObjsTag) 
-            {
-                OrangeObjs.GetComponent<BoxCollider>().enabled = true;
-                OrangeObjs.GetComponent<MeshRenderer>().enabled = true;
-            }
-        }
-        else
+    //My Functions
+    private void ToggleOrangeObjsVisability()
+    {
+        if(OrangeObjsVisability)
         {
             OrangeObjsVisability = false;
 
@@ -48,9 +40,20 @@ public class RealityShifting : MonoBehaviour
                 OrangeObjs.GetComponent<MeshRenderer>().enabled = false;
             }
         }
+        else
+        {
+            OrangeObjsVisability = true;
+
+            OrangeObjsTag = GameObject.FindGameObjectsWithTag("OrangeTag");
+            foreach(GameObject OrangeObjs in OrangeObjsTag) 
+            {
+                OrangeObjs.GetComponent<BoxCollider>().enabled = true;
+                OrangeObjs.GetComponent<MeshRenderer>().enabled = true;
+            }
+        }    
     }
 
-    void ToggleBlueObjsVisability()
+    private void ToggleBlueObjsVisability()
     {
         if(BlueObjsVisability)
         {
@@ -59,8 +62,8 @@ public class RealityShifting : MonoBehaviour
             BlueObjsTag = GameObject.FindGameObjectsWithTag("BlueTag");
             foreach(GameObject BlueObjs in BlueObjsTag) 
             {
-                BlueObjs.GetComponent<BoxCollider>().enabled = true;
-                BlueObjs.GetComponent<MeshRenderer>().enabled = true;
+                BlueObjs.GetComponent<BoxCollider>().enabled = false;
+                BlueObjs.GetComponent<MeshRenderer>().enabled = false;
             }
         }
         else
@@ -70,8 +73,8 @@ public class RealityShifting : MonoBehaviour
             BlueObjsTag = GameObject.FindGameObjectsWithTag("BlueTag");
             foreach(GameObject BlueObjs in BlueObjsTag) 
             {
-                BlueObjs.GetComponent<BoxCollider>().enabled = false;
-                BlueObjs.GetComponent<MeshRenderer>().enabled = false;
+                BlueObjs.GetComponent<BoxCollider>().enabled = true;
+                BlueObjs.GetComponent<MeshRenderer>().enabled = true;
             }
         }
     }

@@ -1,50 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerLook : MonoBehaviour
 {
+    //Variables
     [Header("References")]
-    [SerializeField] WallRun wallRun;
-    [SerializeField] Gun gun;
-    [SerializeField] WeponSwitching weponSwitching;
+    [SerializeField] private WallRun wallRun;
+    private Transform gun;
+    private WeponSwitching weponSwitching;
 
-    public float sensX = 100f;
-    public float sensY = 100f;
+    [Header("Sensitivity")]
+    public float sensX = 300f;
+    public float sensY = 300f;
+    public float handgunADSSensX = 150f;
+    public float handgunADSSensY = 125f;
+    public float arADSSensX = 100f;
+    public float arADSSensY = 75f;
 
-    [SerializeField] Transform cam = null;
-    [SerializeField] Transform orientation = null;
+    [Header("Camera")]
+    [SerializeField] private Transform cam;
+    [SerializeField] private Transform orientation;
+    private float xRotation;
+    private float yRotation;
 
-    float mouseX;
-    float mouseY;
+    [Header("Misc")]
+    private float mouseX;
+    private float mouseY;
+    private float multiplier = 0.01f;
 
-    float multiplier = 0.01f;
-
-    float xRotation;
-    float yRotation;
-
+    //Unity Functions
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        weponSwitching = transform.Find("Camera").Find("WeponHolder").GetComponent<WeponSwitching>();
+        gun = transform.Find("CameraRecoilSway").Find("Camera").Find("RecoilSway").Find("WeponHolder");
+        weponSwitching = transform.Find("CameraRecoilSway").Find("Camera").Find("RecoilSway").Find("WeponHolder").GetComponent<WeponSwitching>();
     }
 
     private void Update()
     {
         mouseX = Input.GetAxisRaw("Mouse X");
         mouseY = Input.GetAxisRaw("Mouse Y");
-
-        if(weponSwitching.selectedWepon == 0 && transform.Find("Camera").Find("WeponHolder").Find("Handgun").GetComponent<Gun>().isAiming)
+        
+        if(weponSwitching.selectedWepon == 0 && gun.Find("Handgun").GetComponent<Gun>().isAiming)
         {
-            yRotation += mouseX * (sensX/2f) * multiplier;
-            xRotation -= mouseY * (sensY/2.5f) * multiplier;
+            yRotation += mouseX * handgunADSSensX * multiplier;
+            xRotation -= mouseY * handgunADSSensY * multiplier;
         }
-        else if(weponSwitching.selectedWepon == 1 && transform.Find("Camera").Find("WeponHolder").Find("GunHeavy").GetComponent<Gun>().isAiming)
+        else if(weponSwitching.selectedWepon == 1 && gun.Find("GunHeavy").GetComponent<Gun>().isAiming)
         {
-            yRotation += mouseX * (sensX/2.5f) * multiplier;
-            xRotation -= mouseY * (sensY/3f) * multiplier;
+            yRotation += mouseX * arADSSensX * multiplier;
+            xRotation -= mouseY * arADSSensY * multiplier;
         }
         else
         {

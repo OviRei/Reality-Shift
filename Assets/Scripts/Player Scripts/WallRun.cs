@@ -1,112 +1,85 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WallRun : MonoBehaviour
 {
+    //Variables
+    [Header("References")]
+    private Rigidbody rb;
+    private PlayerMovement playerMovement;
+
     [Header("Movement")]
     [SerializeField] private Transform orientation;
 
     [Header("Detection")]
-    [SerializeField] private float wallDistance = .5f;
-    [SerializeField] private float minimumJumpHeight = 1.5f;
+    [SerializeField] private float wallDistance = .6f;
+    [SerializeField] private float minimumJumpHeight = 1f;
 
     [Header("Wall Running")]
-    [SerializeField] private float wallRunGravity;
-    [SerializeField] private float wallRunJumpForce;
+    [SerializeField] private float wallRunGravity = 2;
+    [SerializeField] private float wallRunJumpForce = 4;
+    public bool wallLeft = false;
+    public bool wallRight = false;
+    private bool CanWallRun() { return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight); }
 
     [Header("Camera")]
     [SerializeField] private Camera cam;
-    [SerializeField] private float fov;
-    [SerializeField] private float wallRunfov;
-    [SerializeField] private float wallRunfovTime;
-    [SerializeField] private float camTilt;
-    [SerializeField] private float camTiltTime;
-
+    [SerializeField] private float wallRunfov = 60f;
+    [SerializeField] private float wallRunfovTime = 10f;
+    [SerializeField] private float camTilt = 10f;
+    [SerializeField] private float camTiltTime = 10f;
     public float tilt { get; private set; }
 
-    // made them public so they can be accessed from another script
-    public bool wallLeft = false;
-    public bool wallRight = false;
+    [Header("Misc")]
+    [SerializeField] private RaycastHit leftWallHit;
+    [SerializeField] private RaycastHit rightWallHit;
 
-    RaycastHit leftWallHit;
-    RaycastHit rightWallHit;
-
-    private Rigidbody rb;
-
-    // added a reference to the PlayerMovement script so it can be used to access some player movement properties
-    PlayerMovement playerMovement;
-
-    bool CanWallRun()
-    {
-        return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight);
-    }
-
+    //Unity Functions
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        // added this so the reference to the PlayerMovement script becomes available as soon as the game starts
         playerMovement = GetComponent<PlayerMovement>();
-    }
-
-    void CheckWall()
-    {
-        wallLeft = Physics.Raycast(transform.position, -orientation.right, out leftWallHit, wallDistance);
-        wallRight = Physics.Raycast(transform.position, orientation.right, out rightWallHit, wallDistance);
     }
 
     private void Update()
     {
         CheckWall();
 
-        if (CanWallRun())
+        if(CanWallRun())
         {
-            if (wallLeft)
-            {
-                StartWallRun();
-            }
-            else if (wallRight)
-            {
-                StartWallRun();
-            }
-            else
-            {
-                StopWallRun();
-            }
+            if(wallLeft || wallRight) StartWallRun();
+            else StopWallRun();
         }
-        else
-        {
-            StopWallRun();
-        }
+        else StopWallRun();
     }
 
-    void StartWallRun()
+    //My Functions
+    private void CheckWall()
     {
-        // maybe add it back? not sure
-        rb.useGravity = false;
+        wallLeft = Physics.Raycast(transform.position, -orientation.right, out leftWallHit, wallDistance);
+        wallRight = Physics.Raycast(transform.position, orientation.right, out rightWallHit, wallDistance);
+    }
 
+    private void StartWallRun()
+    {
+        rb.useGravity = false;
         rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Acceleration);
 
-        // enables the double jump again, because you started wallrunning so you should have an extra one
         playerMovement.canDoubleJump = true;
 
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, wallRunfov, wallRunfovTime * Time.deltaTime);
 
-        if (wallLeft)
-            tilt = Mathf.Lerp(tilt, -camTilt, camTiltTime * Time.deltaTime);
-        else if (wallRight)
-            tilt = Mathf.Lerp(tilt, camTilt, camTiltTime * Time.deltaTime);
+        if(wallLeft) tilt = Mathf.Lerp(tilt, -camTilt, camTiltTime * Time.deltaTime);
+        else if(wallRight) tilt = Mathf.Lerp(tilt, camTilt, camTiltTime * Time.deltaTime);
 
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(playerMovement.jumpKey))
         {
-            if (wallLeft)
+            if(wallLeft)
             {
                 Vector3 wallRunJumpDirection = transform.up + leftWallHit.normal;
                 rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
                 rb.AddForce(wallRunJumpDirection * wallRunJumpForce * 100, ForceMode.Force);
             }
-            else if (wallRight)
+            else if(wallRight)
             {
                 Vector3 wallRunJumpDirection = transform.up + rightWallHit.normal;
                 rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
@@ -115,11 +88,11 @@ public class WallRun : MonoBehaviour
         }
     }
 
-    void StopWallRun()
+    private void StopWallRun()
     {
         rb.useGravity = true;
 
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, wallRunfovTime * Time.deltaTime);
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, playerMovement.defaultFov, wallRunfovTime * Time.deltaTime);
         tilt = Mathf.Lerp(tilt, 0, camTiltTime * Time.deltaTime);
-    }
+    }    
 }
