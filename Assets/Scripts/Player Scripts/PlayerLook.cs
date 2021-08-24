@@ -42,12 +42,12 @@ public class PlayerLook : MonoBehaviour
         mouseX = Input.GetAxisRaw("Mouse X");
         mouseY = Input.GetAxisRaw("Mouse Y");
         
-        if(weponSwitching.selectedWepon == 0 && gun.Find("Handgun").GetComponent<Gun>().isAiming)
+        if(weponSwitching.selectedWepon == 1 && gun.Find("Handgun").GetComponent<Gun>().isAiming)
         {
             yRotation += mouseX * handgunADSSensX * multiplier;
             xRotation -= mouseY * handgunADSSensY * multiplier;
         }
-        else if(weponSwitching.selectedWepon == 1 && gun.Find("GunHeavy").GetComponent<Gun>().isAiming)
+        else if(weponSwitching.selectedWepon == 2 && gun.Find("GunHeavy").GetComponent<Gun>().isAiming)
         {
             yRotation += mouseX * arADSSensX * multiplier;
             xRotation -= mouseY * arADSSensY * multiplier;

@@ -17,7 +17,7 @@ public class Gun : MonoBehaviour
     public int currentAmmo;
     [SerializeField] private float reloadTime = 1f;
     [SerializeField] private bool isReloading = false;
-    public bool isAiming = false;
+    public bool isAiming;
 
     [Header("Animator")]
     [SerializeField] private ParticleSystem muzzleFlash;

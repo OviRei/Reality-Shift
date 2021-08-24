@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float airMultiplier = 0.2f;
-    private float movementMultiplier = 10f;
+    [SerializeField] private float movementMultiplier = 10f;
     private float horizontalMovement;
     private float verticalMovement;
 
@@ -86,9 +86,13 @@ public class PlayerMovement : MonoBehaviour
         verticalMovement = Input.GetAxisRaw("Vertical");
 
         MovementInput();
+        Crouch();
+    }
+
+    private void FixedUpdate()
+    {
         ControlMovement();
         ControlSpeed();
-        Crouch();
     }
 
     //My Functions
