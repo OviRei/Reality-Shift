@@ -4,6 +4,7 @@ public class WallRun : MonoBehaviour
 {
     //Variables
     [Header("References")]
+    private PlayerLook playerLook;
     private Rigidbody rb;
     private PlayerMovement playerMovement;
 
@@ -23,8 +24,9 @@ public class WallRun : MonoBehaviour
 
     [Header("Camera")]
     [SerializeField] private Camera cam;
-    [SerializeField] private float wallRunfov = 60f;
-    [SerializeField] private float wallRunfovTime = 10f;
+    [SerializeField] private float wallRunFovMultiplier = 1.1f;
+    //[SerializeField] private float wallRunfov = 60f;
+    //[SerializeField] private float wallRunfovTime = 10f;
     [SerializeField] private float camTilt = 10f;
     [SerializeField] private float camTiltTime = 10f;
     public float tilt { get; private set; }
@@ -36,6 +38,7 @@ public class WallRun : MonoBehaviour
     //Unity Functions
     private void Start()
     {
+        playerLook = GetComponent<PlayerLook>();
         rb = GetComponent<Rigidbody>();
         playerMovement = GetComponent<PlayerMovement>();
     }
@@ -66,7 +69,8 @@ public class WallRun : MonoBehaviour
 
         playerMovement.canDoubleJump = true;
 
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, wallRunfov, wallRunfovTime * Time.deltaTime);
+        playerLook.wallrunFov = wallRunFovMultiplier;
+        //cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, wallRunfov, wallRunfovTime * Time.deltaTime);
 
         if(wallLeft) tilt = Mathf.Lerp(tilt, -camTilt, camTiltTime * Time.deltaTime);
         else if(wallRight) tilt = Mathf.Lerp(tilt, camTilt, camTiltTime * Time.deltaTime);
@@ -92,7 +96,8 @@ public class WallRun : MonoBehaviour
     {
         rb.useGravity = true;
 
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, playerMovement.defaultFov, wallRunfovTime * Time.deltaTime);
+        playerLook.wallrunFov = 1f;
+        //cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, playerLook.defaultFov, wallRunfovTime * Time.deltaTime);
         tilt = Mathf.Lerp(tilt, 0, camTiltTime * Time.deltaTime);
     }    
 }

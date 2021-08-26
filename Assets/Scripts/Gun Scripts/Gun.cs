@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using TMPro;
 public class Gun : MonoBehaviour
 {
     //Variables
@@ -11,6 +11,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private float fireRate = 15f;
     [SerializeField] private bool singleFire = false;
     [SerializeField] private float nextTimeToFire = 0f;
+    [SerializeField] private float aimingFovMultiplier = 0.1f;
 
     [Header("Ammo")]
     public int maxAmmo = 10;
@@ -36,19 +37,27 @@ public class Gun : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameObject crosshair;
+    [SerializeField] private GameObject bulletComeOutPlace;
     [SerializeField] private Camera cam;
+    private PlayerMovement playerMovement;
+    private PlayerLook playerLook;
+    [SerializeField] private TextMeshProUGUI gunText;
 
     //Unity Functions
     private void Start()
     {
         currentAmmo = maxAmmo;
+        gunText.text = currentAmmo + "/" + maxAmmo;
 
+        playerLook = transform.parent.parent.parent.parent.parent.GetComponent<PlayerLook>();
+        playerMovement = transform.parent.parent.parent.parent.parent.GetComponent<PlayerMovement>();
         recoilSwayTransform = transform.parent.parent;
         cameraRecoilSwayTransform = transform.parent.parent.parent.parent;
     }
 
     private void Update()
     {
+        gunText.text = currentAmmo + "/" + maxAmmo;
         if(isReloading) return;
 
         if(Input.GetKeyDown(KeyCode.R) || currentAmmo <= 0)
@@ -72,15 +81,17 @@ public class Gun : MonoBehaviour
         {
             isAiming = true;
             animator.SetBool("Aiming", true);
-            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 5, 10 * Time.deltaTime);
-            //crosshair.SetActive(false);
+            playerLook.aimingFov = aimingFovMultiplier;
+            //cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 5, 10 * Time.deltaTime);
+            crosshair.SetActive(false);
         }
         else
         {
             isAiming = false;
             animator.SetBool("Aiming", false);
-            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 80, 10 * Time.deltaTime);
-            //crosshair.SetActive(true);
+            playerLook.aimingFov = 1f;
+            //cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, playerLook.defaultFov, 10 * Time.deltaTime);
+            crosshair.SetActive(true);
         }
     }
 
@@ -126,7 +137,7 @@ public class Gun : MonoBehaviour
 
         cameraRotationalRecoil += new Vector3(-8, Random.Range(-8, 8), 0); 
 
-        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hit/*, range*/))
+        if(isAiming && Physics.Raycast(bulletComeOutPlace.transform.position, bulletComeOutPlace.transform.forward, out hit) || Physics.Raycast(cam.transform.position, cam.transform.forward, out hit/*, range*/))
         {
             Target target = hit.transform.GetComponent<Target>();
 
@@ -152,6 +163,7 @@ public class Gun : MonoBehaviour
     private IEnumerator ReloadWhileAiming()
     {
         isReloading = true;
+        isAiming = false;
 
         animator.SetBool("AimingAndReloading", true);
 
@@ -161,5 +173,6 @@ public class Gun : MonoBehaviour
 
         currentAmmo = maxAmmo;
         isReloading = false;
+        isAiming = true;
     }
 }

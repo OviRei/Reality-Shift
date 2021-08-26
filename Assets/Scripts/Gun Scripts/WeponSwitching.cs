@@ -1,9 +1,12 @@
 using UnityEngine;
-
+using TMPro;
 public class WeponSwitching : MonoBehaviour
 {
     //Variables
     public int selectedWepon = 0;
+    [SerializeField] private GameObject handgunImage;
+    [SerializeField] private GameObject arImage;
+    [SerializeField] private TextMeshProUGUI gunText;
 
     //Unity Functions
     private void Start()
@@ -34,6 +37,25 @@ public class WeponSwitching : MonoBehaviour
         {
             SelectWepon();
         }
+
+        switch(selectedWepon)
+        {
+            case 1:
+                arImage.SetActive(false);
+                handgunImage.SetActive(true);
+                gunText.gameObject.SetActive(true);
+                break;
+            case 2:
+                arImage.SetActive(true);
+                handgunImage.SetActive(false);
+                gunText.gameObject.SetActive(true);
+                break;
+            default:
+                arImage.SetActive(false);
+                handgunImage.SetActive(false);
+                gunText.gameObject.SetActive(false);
+                break;
+        } 
     }
 
     //My Functions

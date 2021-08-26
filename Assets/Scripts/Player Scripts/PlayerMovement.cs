@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jumping")]
     [SerializeField] private float jumpForce = 12f;
-    public bool canDoubleJump = true;
+    public bool canDoubleJump;
 
     [Header("Crouching")]
     [SerializeField] private float crouchSpeed = 2f;
@@ -31,8 +31,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slideSpeed = 10f;    
     [SerializeField] private float lengthOfSlide = 1f;
     [SerializeField] private float slideTime = 0f;
-    [SerializeField] private float slidingFov = 120f;
-    [SerializeField] private float slidingFovTime = 10f;
+    [SerializeField] private float slidingFovMultiplier = 1.9f;
 
     [Header("Drag")]
     [SerializeField] private float groundDrag = 6f;
@@ -50,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Camera")]
     [SerializeField] private Camera cam;
-    public float defaultFov = 80f;
     [SerializeField] private float cameraHeight = 1f;  
 
     [Header("Ground Detection")]
@@ -64,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit slopeHit;
 
     [Header("References")]
+    private PlayerLook playerLook;
     private Rigidbody rb;
     private WallRun wallRun;
 
@@ -72,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         //Sets References
+        playerLook = GetComponent<PlayerLook>();
         wallRun = GetComponent<WallRun>();
         rb = GetComponent<Rigidbody>();
 
@@ -107,6 +107,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             isSliding = false;
+            playerLook.slidingFov = 1f;
             slideTime = lengthOfSlide;
         }
     }
@@ -157,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Crouch()
     {
-        if(isCrouching) transform.Find("CameraRecoilSway").Find("Camera").localPosition = new Vector3(0, crouchHeight, 0) /*Vector3.down * 0.3f*/;
+        if(isCrouching) transform.Find("CameraRecoilSway").Find("Camera").localPosition = new Vector3(0, crouchHeight, 0);
         else transform.Find("CameraRecoilSway").Find("Camera").localPosition = new Vector3(0, cameraHeight, 0);
     }
 
@@ -176,13 +177,13 @@ public class PlayerMovement : MonoBehaviour
         isSliding = true;
         slideTime -= Time.deltaTime;
 
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, slidingFov, slidingFovTime * Time.deltaTime);
-        transform.Find("CameraRecoilSway").Find("Camera").localPosition = new Vector3(0, crouchHeight, 0)/*Vector3.down * 0.3f*/;
+        playerLook.slidingFov = slidingFovMultiplier;
+        transform.Find("CameraRecoilSway").Find("Camera").localPosition = new Vector3(0, crouchHeight, 0);
         
         if(slideTime <= 0)
         {
             isSliding = false;
-            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, defaultFov, slidingFovTime * Time.deltaTime);
+            playerLook.slidingFov = 1f;
             transform.Find("CameraRecoilSway").Find("Camera").localPosition = new Vector3(0, cameraHeight, 0);
         }
     }

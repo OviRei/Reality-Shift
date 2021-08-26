@@ -17,10 +17,19 @@ public class PlayerLook : MonoBehaviour
     public float arADSSensY = 75f;
 
     [Header("Camera")]
-    [SerializeField] private Transform cam;
+    [SerializeField] private Camera cam;
+    [SerializeField] private Transform camTransform;
     [SerializeField] private Transform orientation;
+    private float cameraFov;
     private float xRotation;
     private float yRotation;
+    
+    [Header("Fovs")]
+    public float defaultFov = 80f;
+    public float aimingFov = 1f;
+    public float slidingFov = 1f;
+    public float wallrunFov = 1f;
+
 
     [Header("Misc")]
     private float mouseX;
@@ -60,7 +69,9 @@ public class PlayerLook : MonoBehaviour
 
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        cam.transform.rotation = Quaternion.Euler(xRotation, yRotation, wallRun.tilt);
+        camTransform.transform.rotation = Quaternion.Euler(xRotation, yRotation, wallRun.tilt);
         orientation.transform.rotation = Quaternion.Euler(0, yRotation, 0);
+
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, defaultFov * aimingFov * slidingFov * wallrunFov, 10 * Time.deltaTime);
     }
 }
