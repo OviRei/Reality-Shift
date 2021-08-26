@@ -3,7 +3,10 @@ using TMPro;
 public class WeponSwitching : MonoBehaviour
 {
     //Variables
+    [Header("Wepons")]
     public int selectedWepon = 0;
+
+    [Header("References")]
     [SerializeField] private GameObject handgunImage;
     [SerializeField] private GameObject arImage;
     [SerializeField] private TextMeshProUGUI gunText;

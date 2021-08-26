@@ -4,10 +4,11 @@ using TMPro;
 
 public class HealthBar : MonoBehaviour
 {
-    public Slider slider;
-    public Gradient gradient;
-    public Image fill;
-    public TextMeshProUGUI healthText;
+    [Header("References")]
+    [SerializeField] private Slider slider;
+    [SerializeField] private Gradient gradient;
+    [SerializeField] private Image fill;
+    [SerializeField] private TextMeshProUGUI healthText;
 
     public void SetMaxHealth(float maxHealth)
     {
