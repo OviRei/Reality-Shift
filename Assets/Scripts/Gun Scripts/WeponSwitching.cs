@@ -9,7 +9,9 @@ public class WeponSwitching : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject handgunImage;
     [SerializeField] private GameObject arImage;
-    [SerializeField] private TextMeshProUGUI gunText;
+    [SerializeField] private GameObject magImage;
+    [SerializeField] private TextMeshProUGUI ammoText;
+    [SerializeField] private TextMeshProUGUI magText;
 
     //Unity Functions
     private void Start()
@@ -46,17 +48,23 @@ public class WeponSwitching : MonoBehaviour
             case 1:
                 arImage.SetActive(false);
                 handgunImage.SetActive(true);
-                gunText.gameObject.SetActive(true);
+                magImage.SetActive(true);
+                ammoText.gameObject.SetActive(true);
+                magText.gameObject.SetActive(true);
                 break;
             case 2:
                 arImage.SetActive(true);
                 handgunImage.SetActive(false);
-                gunText.gameObject.SetActive(true);
+                magImage.SetActive(true);
+                ammoText.gameObject.SetActive(true);
+                magText.gameObject.SetActive(true);
                 break;
             default:
                 arImage.SetActive(false);
                 handgunImage.SetActive(false);
-                gunText.gameObject.SetActive(false);
+                magImage.SetActive(false);
+                ammoText.gameObject.SetActive(false);
+                magText.gameObject.SetActive(false);
                 break;
         } 
     }

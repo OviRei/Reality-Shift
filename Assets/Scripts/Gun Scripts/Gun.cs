@@ -16,6 +16,8 @@ public class Gun : MonoBehaviour
     [Header("Ammo")]
     public int maxAmmo = 10;
     public int currentAmmo;
+    public int maxMags = 10;
+    public int currentMags;
     [SerializeField] private float reloadTime = 1f;
     [SerializeField] private bool isReloading = false;
     public bool isAiming;
@@ -41,13 +43,16 @@ public class Gun : MonoBehaviour
     [SerializeField] private Camera cam;
     private PlayerMovement playerMovement;
     private PlayerLook playerLook;
-    [SerializeField] private TextMeshProUGUI gunText;
+    [SerializeField] private TextMeshProUGUI ammoText;
+    [SerializeField] private TextMeshProUGUI magText;
 
     //Unity Functions
     private void Start()
     {
         currentAmmo = maxAmmo;
-        gunText.text = currentAmmo + "/" + maxAmmo;
+        currentMags = maxMags;
+        ammoText.text = currentAmmo + "/" + maxAmmo;
+        magText.text = currentMags.ToString();
 
         playerLook = transform.parent.parent.parent.parent.parent.GetComponent<PlayerLook>();
         playerMovement = transform.parent.parent.parent.parent.parent.GetComponent<PlayerMovement>();
@@ -57,20 +62,25 @@ public class Gun : MonoBehaviour
 
     private void Update()
     {
-        gunText.text = currentAmmo + "/" + maxAmmo;
+        ammoText.text = currentAmmo + "/" + maxAmmo;
+        magText.text = currentMags.ToString();
+        
         if(isReloading) return;
 
         if(Input.GetKeyDown(KeyCode.R) || currentAmmo <= 0)
         {
-            if(isAiming) StartCoroutine(ReloadWhileAiming());
-            else StartCoroutine(Reload());
-            return;
+            if(currentMags >  0)
+            {
+                if(isAiming) StartCoroutine(ReloadWhileAiming());
+                else StartCoroutine(Reload());
+                return;                
+            }
         }
 
-        if(singleFire && Input.GetButtonDown("Fire1")) Shoot();
+        if(singleFire && Input.GetButtonDown("Fire1") && currentAmmo > 0) Shoot();
         else
         {
-            if(Input.GetButton("Fire1") && Time.time >= nextTimeToFire)
+            if(Input.GetButton("Fire1") && Time.time >= nextTimeToFire && currentAmmo > 0)
             {
                 nextTimeToFire = Time.time + 1f / fireRate;
                 Shoot();
@@ -157,6 +167,7 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(.25f);
 
         currentAmmo = maxAmmo;
+        currentMags--;
         isReloading = false;
     }
 
@@ -172,6 +183,7 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(.25f);
 
         currentAmmo = maxAmmo;
+        currentMags--;
         isReloading = false;
         isAiming = true;
     }

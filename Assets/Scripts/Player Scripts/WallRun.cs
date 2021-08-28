@@ -16,6 +16,7 @@ public class WallRun : MonoBehaviour
     [SerializeField] private float minimumJumpHeight = 1f;
 
     [Header("Wall Running")]
+    public bool isWallrunning;
     [SerializeField] private float wallRunGravity = 2;
     [SerializeField] private float wallRunJumpForce = 4;
     public bool wallLeft = false;
@@ -34,6 +35,9 @@ public class WallRun : MonoBehaviour
     [Header("Misc")]
     [SerializeField] private RaycastHit leftWallHit;
     [SerializeField] private RaycastHit rightWallHit;
+    [SerializeField] private int lastWallID;
+    [SerializeField] private int leftWallID;
+    [SerializeField] private int rightWallID;
 
     //Unity Functions
     private void Start()
@@ -47,10 +51,32 @@ public class WallRun : MonoBehaviour
     {
         CheckWall();
 
+        if(playerMovement.isGrounded)
+        {
+            leftWallID = 1;
+            rightWallID = 1;
+            lastWallID = 0;
+        }
+        
+        if(!isWallrunning && !playerMovement.isGrounded && !wallLeft && !wallRight)
+        {
+            if(leftWallID != 1) lastWallID = leftWallID;
+            if(rightWallID != 1) lastWallID = rightWallID;
+            leftWallID = 1;
+            rightWallID = 1;
+        }
+
+        if(wallLeft) leftWallID = leftWallHit.transform.GetInstanceID();
+        else if(wallRight) rightWallID = rightWallHit.transform.GetInstanceID(); 
+
         if(CanWallRun())
         {
-            if(wallLeft || wallRight) StartWallRun();
-            else StopWallRun();
+            if(lastWallID == leftWallID || lastWallID == rightWallID) StopWallRun();
+            else
+            {
+                if(wallLeft || wallRight) StartWallRun();
+                else StopWallRun();
+            }
         }
         else StopWallRun();
     }
@@ -64,13 +90,13 @@ public class WallRun : MonoBehaviour
 
     private void StartWallRun()
     {
+        isWallrunning = true;
         rb.useGravity = false;
         rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Acceleration);
 
         playerMovement.canDoubleJump = true;
 
         playerLook.wallrunFov = wallRunFovMultiplier;
-        //cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, wallRunfov, wallRunfovTime * Time.deltaTime);
 
         if(wallLeft) tilt = Mathf.Lerp(tilt, -camTilt, camTiltTime * Time.deltaTime);
         else if(wallRight) tilt = Mathf.Lerp(tilt, camTilt, camTiltTime * Time.deltaTime);
@@ -95,9 +121,9 @@ public class WallRun : MonoBehaviour
     private void StopWallRun()
     {
         rb.useGravity = true;
+        isWallrunning = false;
 
         playerLook.wallrunFov = 1f;
-        //cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, playerLook.defaultFov, wallRunfovTime * Time.deltaTime);
         tilt = Mathf.Lerp(tilt, 0, camTiltTime * Time.deltaTime);
     }    
 }
