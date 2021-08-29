@@ -38,6 +38,7 @@ public class WallRun : MonoBehaviour
     [SerializeField] private int lastWallID;
     [SerializeField] private int leftWallID;
     [SerializeField] private int rightWallID;
+    private AudioSource jumpJetAudioSource;
 
     //Unity Functions
     private void Start()
@@ -45,6 +46,7 @@ public class WallRun : MonoBehaviour
         playerLook = GetComponent<PlayerLook>();
         rb = GetComponent<Rigidbody>();
         playerMovement = GetComponent<PlayerMovement>();
+        jumpJetAudioSource = GameObject.Find("JumpJet").GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -67,7 +69,7 @@ public class WallRun : MonoBehaviour
         }
 
         if(wallLeft) leftWallID = leftWallHit.transform.GetInstanceID();
-        else if(wallRight) rightWallID = rightWallHit.transform.GetInstanceID(); 
+        else if(wallRight) rightWallID = rightWallHit.transform.GetInstanceID();
 
         if(CanWallRun())
         {
@@ -90,6 +92,8 @@ public class WallRun : MonoBehaviour
 
     private void StartWallRun()
     {
+        if(jumpJetAudioSource.clip.name != "Jumpjet_Wallrun_1" && !jumpJetAudioSource.isPlaying) FindObjectOfType<AudioManager>().Play("Jumpjet_Wallrun_1");
+
         isWallrunning = true;
         rb.useGravity = false;
         rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Acceleration);
@@ -103,6 +107,23 @@ public class WallRun : MonoBehaviour
 
         if(Input.GetKeyDown(playerMovement.jumpKey))
         {
+            int rnd = Random.Range(1, 5);
+            switch(rnd)
+            {
+            case 1:
+                FindObjectOfType<AudioManager>().Play("Jump_1");
+                break;
+            case 2:
+                FindObjectOfType<AudioManager>().Play("Jump_2");
+                break;
+            case 3:
+                FindObjectOfType<AudioManager>().Play("Jump_3");
+                break;
+            case 4:
+                FindObjectOfType<AudioManager>().Play("Jump_4");
+                break;
+            }
+
             if(wallLeft)
             {
                 Vector3 wallRunJumpDirection = transform.up + leftWallHit.normal;

@@ -42,6 +42,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private GameObject bulletComeOutPlace;
     [SerializeField] private Camera cam;
     private PlayerMovement playerMovement;
+    private WeponSwitching weponSwitching;
     private PlayerLook playerLook;
     [SerializeField] private TextMeshProUGUI ammoText;
     [SerializeField] private TextMeshProUGUI magText;
@@ -54,6 +55,7 @@ public class Gun : MonoBehaviour
         ammoText.text = currentAmmo + "/" + maxAmmo;
         magText.text = currentMags.ToString();
 
+        weponSwitching = transform.parent.GetComponent<WeponSwitching>();
         playerLook = transform.parent.parent.parent.parent.parent.GetComponent<PlayerLook>();
         playerMovement = transform.parent.parent.parent.parent.parent.GetComponent<PlayerMovement>();
         recoilSwayTransform = transform.parent.parent;
@@ -126,6 +128,11 @@ public class Gun : MonoBehaviour
         animator.SetBool("Reloading", false);
         animator.SetBool("Aiming", false);
         animator.SetBool("AimingAndReloading", false);
+
+        int rnd = Random.Range(1, 4);
+        if(rnd == 1) FindObjectOfType<AudioManager>().Play("gunDraw_1");
+        if(rnd == 2) FindObjectOfType<AudioManager>().Play("gunDraw_2");
+        if(rnd == 3) FindObjectOfType<AudioManager>().Play("gunDraw_3");            
     }
 
     private Quaternion GetQuaternion()
@@ -136,6 +143,9 @@ public class Gun : MonoBehaviour
     //My Functions
     private void Shoot()
     {
+        if(weponSwitching.selectedWepon == 1) FindObjectOfType<AudioManager>().Play("pistolshot");
+        if(weponSwitching.selectedWepon == 2) FindObjectOfType<AudioManager>().Play("arshot");
+
         RaycastHit hit;
 
         muzzleFlash.Play();
@@ -159,13 +169,16 @@ public class Gun : MonoBehaviour
     private IEnumerator Reload()
     {
         isReloading = true;
-
         animator.SetBool("Reloading", true);
+        if(weponSwitching.selectedWepon == 1) FindObjectOfType<AudioManager>().Play("pistol_magout");
+        if(weponSwitching.selectedWepon == 2) FindObjectOfType<AudioManager>().Play("ar_magout");
 
         yield return new WaitForSeconds(reloadTime - .25f);
         animator.SetBool("Reloading", false);
         yield return new WaitForSeconds(.25f);
 
+        if(weponSwitching.selectedWepon == 1) FindObjectOfType<AudioManager>().Play("pistol_magin");
+        if(weponSwitching.selectedWepon == 2) FindObjectOfType<AudioManager>().Play("ar_magin");
         currentAmmo = maxAmmo;
         currentMags--;
         isReloading = false;
@@ -175,13 +188,16 @@ public class Gun : MonoBehaviour
     {
         isReloading = true;
         isAiming = false;
-
         animator.SetBool("AimingAndReloading", true);
+        if(weponSwitching.selectedWepon == 1) FindObjectOfType<AudioManager>().Play("pistol_magout");
+        if(weponSwitching.selectedWepon == 2) FindObjectOfType<AudioManager>().Play("ar_magout");
 
         yield return new WaitForSeconds(reloadTime - .25f);
         animator.SetBool("AimingAndReloading", false);
         yield return new WaitForSeconds(.25f);
 
+        if(weponSwitching.selectedWepon == 1) FindObjectOfType<AudioManager>().Play("pistol_magin");
+        if(weponSwitching.selectedWepon == 2) FindObjectOfType<AudioManager>().Play("ar_magin");
         currentAmmo = maxAmmo;
         currentMags--;
         isReloading = false;

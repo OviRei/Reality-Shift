@@ -65,6 +65,8 @@ public class PlayerMovement : MonoBehaviour
     private PlayerLook playerLook;
     private Rigidbody rb;
     private WallRun wallRun;
+    private AudioSource bottomAudioSource;
+
 
 
     //Unity Functions
@@ -74,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
         playerLook = GetComponent<PlayerLook>();
         wallRun = GetComponent<WallRun>();
         rb = GetComponent<Rigidbody>();
+        bottomAudioSource = GameObject.Find("Bottom").GetComponent<AudioSource>();
 
         rb.freezeRotation = true;
     }
@@ -144,12 +147,43 @@ public class PlayerMovement : MonoBehaviour
     {
         if(isGrounded)
         {
+            int rnd = Random.Range(1, 5);
+            switch(rnd)
+            {
+            case 1:
+                FindObjectOfType<AudioManager>().Play("Jump_1");
+                break;
+            case 2:
+                FindObjectOfType<AudioManager>().Play("Jump_2");
+                break;
+            case 3:
+                FindObjectOfType<AudioManager>().Play("Jump_3");
+                break;
+            case 4:
+                FindObjectOfType<AudioManager>().Play("Jump_4");
+                break;
+            }
+
             canDoubleJump = true;
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }
         else if(canDoubleJump && !(wallRun.wallLeft || wallRun.wallRight))
         {
+            int rnd = Random.Range(1, 4);
+            switch(rnd)
+            {
+            case 1:
+                FindObjectOfType<AudioManager>().Play("DoubleJump_1");
+                break;
+            case 2:
+                FindObjectOfType<AudioManager>().Play("DoubleJump_2");
+                break;
+            case 3:
+                FindObjectOfType<AudioManager>().Play("DoubleJump_3");
+                break;
+            }
+            
             canDoubleJump = false;
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
@@ -174,6 +208,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Slide()
     {
+        if(!bottomAudioSource.isPlaying) FindObjectOfType<AudioManager>().Play("Slide_1");
+
         isSliding = true;
         slideTime -= Time.deltaTime;
 

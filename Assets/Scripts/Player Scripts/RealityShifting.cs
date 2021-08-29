@@ -1,4 +1,5 @@
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RealityShifting : MonoBehaviour
 {
@@ -21,6 +22,28 @@ public class RealityShifting : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(2))
         {
+            int rnd = Random.Range(1, 7);
+            switch(rnd)
+            {
+            case 1:
+                FindObjectOfType<AudioManager>().Play("RLS_1");
+                break;
+            case 2:
+                FindObjectOfType<AudioManager>().Play("RLS_2");
+                break;
+            case 3:
+                FindObjectOfType<AudioManager>().Play("RLS_3");
+                break;
+            case 4:
+                FindObjectOfType<AudioManager>().Play("RLS_4");
+                break;
+            case 5:
+                FindObjectOfType<AudioManager>().Play("RLS_5");
+                break;
+            case 6:
+                FindObjectOfType<AudioManager>().Play("RLS_6");
+                break;
+            }
             ToggleOrangeObjsVisability();
             ToggleBlueObjsVisability();
         }
