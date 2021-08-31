@@ -134,13 +134,19 @@ public class PlayerMovement : MonoBehaviour
         else rb.drag = airDrag;
 
         if(Input.GetKey(sprintKey) && !Input.GetKey(crouchKey))
-            moveSpeed = Mathf.Lerp(moveSpeed, sprintSpeed, acceleration * Time.deltaTime);
+        {
+            if(wallRun.isWallrunning) moveSpeed = Mathf.Lerp(moveSpeed, sprintSpeed * 2f, acceleration * Time.deltaTime);
+            else moveSpeed = Mathf.Lerp(moveSpeed, sprintSpeed, acceleration * Time.deltaTime);
+        }
         else if(Input.GetKey(crouchKey) && !isSliding || isCrouching)
             moveSpeed = Mathf.Lerp(moveSpeed, crouchSpeed, acceleration * Time.deltaTime);
         else if(isSliding)
             moveSpeed = Mathf.Lerp(moveSpeed, slideSpeed, acceleration * Time.deltaTime);
         else
-            moveSpeed = Mathf.Lerp(moveSpeed, walkSpeed, acceleration * Time.deltaTime);
+        {
+            if(wallRun.isWallrunning) moveSpeed = Mathf.Lerp(moveSpeed, walkSpeed + 2f, acceleration * Time.deltaTime);
+            else moveSpeed = Mathf.Lerp(moveSpeed, walkSpeed, acceleration * Time.deltaTime);
+        }    
     }
 
     private void Jump()

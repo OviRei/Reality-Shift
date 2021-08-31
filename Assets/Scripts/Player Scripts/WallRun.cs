@@ -98,9 +98,8 @@ public class WallRun : MonoBehaviour
         rb.useGravity = false;
         rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Acceleration);
 
-        playerMovement.canDoubleJump = true;
-
         playerLook.wallrunFov = wallRunFovMultiplier;
+        playerMovement.canDoubleJump = true;
 
         if(wallLeft) tilt = Mathf.Lerp(tilt, -camTilt, camTiltTime * Time.deltaTime);
         else if(wallRight) tilt = Mathf.Lerp(tilt, camTilt, camTiltTime * Time.deltaTime);
