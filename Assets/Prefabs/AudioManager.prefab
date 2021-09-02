@@ -1,0 +1,307 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7269936879958317716
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7269936879958317718}
+  - component: {fileID: 7269936879958317719}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7269936879958317718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7269936879958317716}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7269936879958317719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7269936879958317716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7fe6a4da6258b74789a06fe701602ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mixerGroup: {fileID: 0}
+  sounds:
+  - name: DoubleJump_1
+    clip: {fileID: 8300000, guid: 5cc1cabac1195554f80b2026eea48c0c, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: DoubleJump_2
+    clip: {fileID: 8300000, guid: 5ec3194b43a37254e9a15e197bd886a8, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: DoubleJump_3
+    clip: {fileID: 8300000, guid: 6232d468cdd9b2a42b689d9e728e22c9, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Jump_1
+    clip: {fileID: 8300000, guid: ccd6590a8103a474a8f2f5967b93aec3, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Jump_2
+    clip: {fileID: 8300000, guid: 74ba7d059c4e8cd4db2da72065ab9336, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Jump_3
+    clip: {fileID: 8300000, guid: 514e41c971436b8429b3b5817cec23eb, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Jump_4
+    clip: {fileID: 8300000, guid: 6b6181be00739da4aaf0a560f32c0e00, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Jumpjet_Wallrun_1
+    clip: {fileID: 8300000, guid: fad962b8c73e30e4eb30d8415479ccfd, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Jumpjet_Wallrun_2
+    clip: {fileID: 8300000, guid: db2a16984c9815540a07193b4cda06a3, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Jumpjet_Wallrun_3
+    clip: {fileID: 8300000, guid: 5bade4600d20ad843bbc4e602637b5f5, type: 3}
+    volume: 0.3
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Slide_1
+    clip: {fileID: 8300000, guid: 12b8fbb056901cb4997e1955f6c1fe0f, type: 3}
+    volume: 0.4
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: RLS_1
+    clip: {fileID: 8300000, guid: 9944f6bdf64b64347af9df7a9bf62d2f, type: 3}
+    volume: 0.4
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: RLS_2
+    clip: {fileID: 8300000, guid: fc442fe549d347f43a1cc3c7bf94fb9b, type: 3}
+    volume: 0.4
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: RLS_3
+    clip: {fileID: 8300000, guid: 60d283902a58b774781492e9cc51344d, type: 3}
+    volume: 0.4
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: RLS_4
+    clip: {fileID: 8300000, guid: 61188b14b4b0d2148a3f854078432e41, type: 3}
+    volume: 0.4
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: RLS_5
+    clip: {fileID: 8300000, guid: 5750fba39694a0f4085abb2c04c48021, type: 3}
+    volume: 0.4
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: RLS_6
+    clip: {fileID: 8300000, guid: a7cb46012d261164d831d3a8316b0b25, type: 3}
+    volume: 0.4
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: gunDraw_1
+    clip: {fileID: 8300000, guid: 6ebfe2e621750fe4b86792fbf54e5260, type: 3}
+    volume: 0.8
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: gunDraw_2
+    clip: {fileID: 8300000, guid: 70a2ddb271c54094ebb5b84660819af3, type: 3}
+    volume: 0.8
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: gunDraw_3
+    clip: {fileID: 8300000, guid: 22045a8f09640734bbe59b080e019b74, type: 3}
+    volume: 0.8
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: pistolshot
+    clip: {fileID: 8300000, guid: 17c4c41f22c4b244f823782517150b03, type: 3}
+    volume: 0.7
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 0.5
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: pistol_magin
+    clip: {fileID: 8300000, guid: 5f021366ff434a4489b1073a64d5f8a7, type: 3}
+    volume: 0.7
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 0.5
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: pistol_magout
+    clip: {fileID: 8300000, guid: ff5d4bbc6a79ff9478cc405295558263, type: 3}
+    volume: 0.7
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 0.5
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: arshot
+    clip: {fileID: 8300000, guid: 3e1864b08692b3a49b55b5bba5976140, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: ar_magin
+    clip: {fileID: 8300000, guid: 357688118c9437d4bb13e76028fa86d1, type: 3}
+    volume: 0.7
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 0.5
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: ar_magout
+    clip: {fileID: 8300000, guid: 9293860eb4320544990fa6890b4088e2, type: 3}
+    volume: 0.7
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    spatialBlend: 0.5
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
