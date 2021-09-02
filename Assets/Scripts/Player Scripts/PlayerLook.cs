@@ -7,6 +7,7 @@ public class PlayerLook : MonoBehaviour
     [SerializeField] private WallRun wallRun;
     private Transform gun;
     private WeponSwitching weponSwitching;
+    private PlayerDie playerDie;
 
     [Header("Sensitivity")]
     public float sensX = 300f;
@@ -30,7 +31,6 @@ public class PlayerLook : MonoBehaviour
     public float slidingFov = 1f;
     public float wallrunFov = 1f;
 
-
     [Header("Misc")]
     private float mouseX;
     private float mouseY;
@@ -42,12 +42,15 @@ public class PlayerLook : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        playerDie = GetComponent<PlayerDie>();
         gun = transform.Find("CameraRecoilSway").Find("Camera").Find("RecoilSway").Find("WeponHolder");
         weponSwitching = transform.Find("CameraRecoilSway").Find("Camera").Find("RecoilSway").Find("WeponHolder").GetComponent<WeponSwitching>();
     }
 
     private void Update()
     {
+        if(playerDie.playerDead) return;
+        
         mouseX = Input.GetAxisRaw("Mouse X");
         mouseY = Input.GetAxisRaw("Mouse Y");
         

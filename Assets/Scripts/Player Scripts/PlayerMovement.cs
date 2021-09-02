@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -65,9 +67,9 @@ public class PlayerMovement : MonoBehaviour
     private PlayerLook playerLook;
     private Rigidbody rb;
     private WallRun wallRun;
+    private PlayerDie playerDie;
     private AudioSource bottomAudioSource;
-
-
+    [SerializeField] private TextMeshProUGUI SpeedOMeterText; 
 
     //Unity Functions
     private void Start()
@@ -76,7 +78,10 @@ public class PlayerMovement : MonoBehaviour
         playerLook = GetComponent<PlayerLook>();
         wallRun = GetComponent<WallRun>();
         rb = GetComponent<Rigidbody>();
+        playerDie = GetComponent<PlayerDie>();
         bottomAudioSource = GameObject.Find("Bottom").GetComponent<AudioSource>();
+
+        StartCoroutine(CalcVelocity());
 
         rb.freezeRotation = true;
     }
@@ -88,17 +93,42 @@ public class PlayerMovement : MonoBehaviour
         horizontalMovement = Input.GetAxisRaw("Horizontal");
         verticalMovement = Input.GetAxisRaw("Vertical");
 
-        MovementInput();
-        Crouch();
+       //if(isGrounded)
+       //{
+       //    StartCoroutine(FindObjectOfType<AudioManager>().StartFade("Jump_1", 5f));
+       //    StartCoroutine(FindObjectOfType<AudioManager>().StartFade("Jump_2", 5f));
+       //    StartCoroutine(FindObjectOfType<AudioManager>().StartFade("Jump_3", 5f));
+       //    StartCoroutine(FindObjectOfType<AudioManager>().StartFade("Jump_4", 5f));
+       //}
+
+        if(!playerDie.playerDead)
+        {
+            MovementInput();
+            Crouch();
+        }
     }
 
     private void FixedUpdate()
     {
-        ControlMovement();
-        ControlSpeed();
+        if(!playerDie.playerDead)
+        {
+            ControlMovement();
+            ControlSpeed();
+        }
     }
 
-    //My Functions
+    //My Function
+    private IEnumerator CalcVelocity()
+    {
+        while(Application.isPlaying)
+        {
+            Vector3 lastPos = gameObject.transform.position;
+            yield return new WaitForFixedUpdate();
+            float movesSpeed = Mathf.RoundToInt(Vector3.Distance(gameObject.transform.position, lastPos) / Time.fixedDeltaTime);
+            SpeedOMeterText.text = movesSpeed + "km/h";
+        }
+    }
+        
     private void MovementInput()
     {
         if(Input.GetKeyDown(jumpKey)) Jump();
